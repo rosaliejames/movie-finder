@@ -9,16 +9,29 @@ export const MovieList: React.FunctionComponent<Props> = ({
   pageInfo: {hasNextPage, hasPreviousPage, page},
   onFetchSearchPage,
 }) => {
+  const flatListRef = React.useRef<FlatList<Movie>>(null);
+
   const loadPreviousPage = React.useMemo(() => {
-    return () => onFetchSearchPage(page - 1);
+    return () => {
+      onFetchSearchPage(page - 1);
+    };
   }, [onFetchSearchPage, page]);
 
   const loadNextPage = React.useMemo(() => {
-    return () => onFetchSearchPage(page + 1);
-  }, [onFetchSearchPage, page]);
+    return () => {
+      onFetchSearchPage(page + 1);
+    };
+  }, [onFetchSearchPage, page, flatListRef]);
+
+  React.useEffect(() => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToOffset({offset: 0, animated: false});
+    }
+  }, [movies, flatListRef]);
 
   return (
     <FlatList
+      ref={flatListRef}
       style={styles.container}
       data={movies}
       renderItem={renderMovieCell}
