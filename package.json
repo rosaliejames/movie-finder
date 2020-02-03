@@ -10,6 +10,7 @@
     "lint": "tslint --project ."
   },
   "dependencies": {
+    "@types/node": "^13.7.0",
     "prettier": "^1.19.1",
     "react": "16.9.0",
     "react-native": "0.61.5",

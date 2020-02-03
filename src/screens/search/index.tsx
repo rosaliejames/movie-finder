@@ -4,67 +4,34 @@ import {searchMovies} from './MovieAPI';
 import {SearchBar} from './SearchBar';
 import {Movie} from '../../types';
 import {MovieList} from './MovieList';
+import {useDebouncedSearch} from '../../hooks/DebouncedSearch';
 
 export const SearchPage: React.FunctionComponent = () => {
-  const [searchTerm, setSearchTerm] = React.useState('');
-  const [movies, setMovies] = React.useState<Movie[]>([]);
-  const [pageInfo, setPageInfo] = React.useState({
-    hasNextPage: false,
-    hasPreviousPage: false,
-    page: 0,
-  });
-  const didChangeSearchTerm = React.useMemo(() => {
-    return (input: string) => {
-      setSearchTerm(input);
-    };
-  }, [setSearchTerm]);
+  const {
+    searchTerm,
+    onChangeSearchTerm,
+    results,
+    setResults,
+  } = useDebouncedSearch(searchMovies);
 
-  React.useMemo(() => {
-    searchMovies(searchTerm).then(resp => {
-      setMovies(resp.movies);
-      if (resp.pageInfo) {
-        setPageInfo(resp.pageInfo);
-      }
-    });
-  }, [searchTerm]);
-
-  const loadPrevPage = React.useMemo(() => {
-    return () => {
-      setMovies([]);
-      searchMovies(searchTerm, pageInfo.page - 1).then(resp => {
-        setMovies(resp.movies);
-        if (resp.pageInfo) {
-          setPageInfo(resp.pageInfo);
-        }
-      });
-    };
-  }, [searchTerm, pageInfo.page]);
-
-  const loadNextPage = React.useMemo(() => {
-    return () => {
-      setMovies([]);
-      searchMovies(searchTerm, pageInfo.page + 1).then(resp => {
-        setMovies(resp.movies);
-        if (resp.pageInfo) {
-          setPageInfo(resp.pageInfo);
-        }
-      });
-    };
-  }, [searchTerm, pageInfo.page]);
+  const didFetchSearchPage = React.useMemo(() => {
+    return (pageNum: number) =>
+      searchMovies(searchTerm, pageNum).then(setResults);
+  }, [setResults, searchTerm]);
 
   return (
     <View style={styles.container}>
       <SearchBar
         searchTerm={searchTerm}
-        onChangeSearchTerm={didChangeSearchTerm}
+        onChangeSearchTerm={onChangeSearchTerm}
       ></SearchBar>
-      <MovieList
-        movies={movies}
-        hasNextPage={pageInfo.hasNextPage}
-        hasPreviousPage={pageInfo.hasPreviousPage}
-        loadPreviousPage={loadPrevPage}
-        loadNextPage={loadNextPage}
-      ></MovieList>
+      {results && (
+        <MovieList
+          movies={results.movies}
+          pageInfo={results.pageInfo}
+          onFetchSearchPage={didFetchSearchPage}
+        ></MovieList>
+      )}
     </View>
   );
 };

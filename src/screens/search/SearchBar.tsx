@@ -39,6 +39,6 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     marginHorizontal: 8,
-    // fontSize: 18,
+    fontSize: 16,
   },
 });

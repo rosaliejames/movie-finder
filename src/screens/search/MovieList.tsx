@@ -1,16 +1,22 @@
 import * as React from 'react';
 import {FlatList, Text, View, StyleSheet} from 'react-native';
-import {Movie} from '../../types';
+import {Movie, MovieSearchResponse} from '../../types';
 import {MovieCell} from './MovieCell';
 import {Button} from '../../components/Button';
 
 export const MovieList: React.FunctionComponent<Props> = ({
   movies,
-  hasNextPage,
-  hasPreviousPage,
-  loadNextPage,
-  loadPreviousPage,
+  pageInfo: {hasNextPage, hasPreviousPage, page},
+  onFetchSearchPage,
 }) => {
+  const loadPreviousPage = React.useMemo(() => {
+    return () => onFetchSearchPage(page - 1);
+  }, [onFetchSearchPage, page]);
+
+  const loadNextPage = React.useMemo(() => {
+    return () => onFetchSearchPage(page + 1);
+  }, [onFetchSearchPage, page]);
+
   return (
     <FlatList
       style={styles.container}
@@ -41,10 +47,8 @@ const renderMovieCell = ({item}: {item: Movie}): React.ReactElement<any> => (
 
 interface Props {
   movies: Movie[];
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-  loadNextPage: () => void;
-  loadPreviousPage: () => void;
+  pageInfo: MovieSearchResponse['pageInfo'];
+  onFetchSearchPage: (pageNum: number) => void;
 }
 
 const styles = StyleSheet.create({

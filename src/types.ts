@@ -8,3 +8,14 @@ export interface Movie {
   vote_count: number;
   vote_average: number;
 }
+
+export interface MovieSearchResponse {
+  movies: Movie[];
+  pageInfo: PageInfo;
+}
+
+export interface PageInfo {
+  page: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}

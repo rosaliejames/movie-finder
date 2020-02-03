@@ -1,11 +1,14 @@
-import {Movie} from '../../types';
+import {Movie, MovieSearchResponse} from '../../types';
 
 export const searchMovies = async (
   searchTerm: string,
   currentPage = 1,
 ): Promise<MovieSearchResponse> => {
   if (searchTerm === '') {
-    return {movies: []};
+    return {
+      movies: [],
+      pageInfo: {hasNextPage: false, hasPreviousPage: false, page: 0},
+    };
   }
 
   const resp = await fetch(
@@ -15,7 +18,10 @@ export const searchMovies = async (
   if (!resp.ok) {
     const {errors} = await resp.json();
     console.warn(errors);
-    return {movies: []};
+    return {
+      movies: [],
+      pageInfo: {hasNextPage: false, hasPreviousPage: false, page: 0},
+    };
   }
   const {results: movies, page, total_pages: totalPages} = await resp.json();
   return {
@@ -27,14 +33,3 @@ export const searchMovies = async (
     },
   };
 };
-
-interface MovieSearchResponse {
-  movies: Movie[];
-  pageInfo?: PageInfo;
-}
-
-interface PageInfo {
-  page: number;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-}
