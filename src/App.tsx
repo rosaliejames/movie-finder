@@ -11,7 +11,7 @@
 import React from 'react';
 import {SafeAreaView, StatusBar} from 'react-native';
 
-import {SearchPage} from './search';
+import {SearchPage} from './screens/search';
 
 declare var global: {HermesInternal: null | {}};
 

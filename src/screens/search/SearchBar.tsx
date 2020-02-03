@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   wrapper: {
-    height: 25,
+    minHeight: 42,
     justifyContent: 'center',
     backgroundColor: '#EFEFEF',
     borderRadius: 25,
@@ -39,5 +39,6 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     marginHorizontal: 8,
+    // fontSize: 18,
   },
 });

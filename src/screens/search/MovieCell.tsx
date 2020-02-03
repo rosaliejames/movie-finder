@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
-import {Movie} from '../types';
-import {ImageNotFound} from '../components/ImageNotFound';
+import {Movie} from '../../types';
+import {ImageNotFound} from '../../components/ImageNotFound';
 
 export const MovieCell: React.FunctionComponent<Props> = ({
   movie: {title, poster_path},
