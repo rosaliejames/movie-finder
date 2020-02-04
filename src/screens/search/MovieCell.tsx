@@ -1,17 +1,24 @@
 import * as React from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {Movie} from '../../types';
 import {ImageNotFound} from '../../components/ImageNotFound';
+import {useCurrentMovieContext} from '../../hooks/CurrentMovieContext';
 
-export const MovieCell: React.FunctionComponent<Props> = ({
-  movie: {title, poster_path},
-}) => {
+export const MovieCell: React.FunctionComponent<Props> = ({movie}) => {
+  const {title, poster_path} = movie;
+  const {setMovie} = useCurrentMovieContext();
+
+  const didPressMovie = React.useMemo(() => {
+    return () => {
+      setMovie(movie);
+    };
+  }, [movie]);
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={didPressMovie}>
       {poster_path ? (
         <Image
           source={{
-            uri: `https://image.tmdb.org/t/p/w154/${poster_path}`,
+            uri: `https://image.tmdb.org/t/p/w185/${poster_path}`,
           }}
           style={styles.image}
           resizeMode="contain"
@@ -24,7 +31,7 @@ export const MovieCell: React.FunctionComponent<Props> = ({
       <View style={styles.textContainer}>
         <Text lineBreakMode="tail">{title}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
